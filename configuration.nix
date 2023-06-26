@@ -16,10 +16,12 @@ let
   setuptools
   afdko
   ];
+
+  # ## my gpg  is 7BFCC587A8F5985B4658933538BABABCEF0A2C0A for whenever i encrupyt something here. LUKS or otherwise.
 in 
 {
-  system.nixos.versionSuffix = "-sameer-${gitCommitId}";
-  system.nixos.label = "sameer-${gitCommitId}";
+  system.nixos.versionSuffix = "-7BFCC587A8F5985B4658933538BABABCEF0A2C0A-${gitCommitId}";
+  system.nixos.label = "7BFCC587A8F5985B4658933538BABABCEF0A2C0A-${gitCommitId}";
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -169,6 +171,8 @@ gappsWrapperArgs+=(
     nyxt
     gnutls
     gnumake
+    autoconf
+    sbcl
     #gnupg
     #pinentry
     openssl_3
