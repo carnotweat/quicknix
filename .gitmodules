@@ -1,4 +1,0 @@
-[submodule "nixpkgs"]
-	path = nixpkgs
-	url = https://github.com/3mdeb/nixpkgs.git
-	branch = trenchboot_support_2020.03
