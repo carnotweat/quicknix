@@ -25,6 +25,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./cachix.nix
     ];
 
   # Bootloader.
@@ -65,6 +66,7 @@ in
   package = pkgs.nixFlakes;
   extraOptions = ''
     experimental-features = nix-command flakes
+    trusted-users = [ "root" "x" ];
   '';
 };
   nix.nixPath = [
@@ -98,8 +100,11 @@ gappsWrapperArgs+=(
 
  
 
-  nix.settings.trusted-users = [ "root" "x" ];
-  
+  # nix = {
+  #   extraOptions = ''
+  #   trusted-users = [ "root" "x" ];
+  #     '';
+  # };
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
@@ -140,7 +145,7 @@ gappsWrapperArgs+=(
   users.users.x = {
     isNormalUser = true;
     description = "x";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "tss" ];
     packages = with pkgs; [
       
       #firefox
@@ -149,6 +154,10 @@ gappsWrapperArgs+=(
     ];
   };
   security.sudo.wheelNeedsPassword = false;
+  security.tpm2.enable = true;
+security.tpm2.pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
+security.tpm2.tctiEnvironment.enable = true;  # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
+#users.users.x.extraGroups = [ "tss" ];  # tss group has access to TPM devices
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -173,6 +182,9 @@ gappsWrapperArgs+=(
     gnumake
     autoconf
     sbcl
+   tpm2-tools
+   tpm2-tss
+   grub-tb-efi
     #gnupg
     #pinentry
     openssl_3
