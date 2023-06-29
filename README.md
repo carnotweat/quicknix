@@ -46,7 +46,7 @@ Using math for better developer experience, reliability and maintainability of n
 
 
 
-- Use the infrastructure for a user governed , distributed network and data transfer 
+- Use the infrastructure for a user governed , distributed network and data transfer , for issues like nar.xz on IPv6 for one can be be experimented with more motivation of more people. This may not be the best or even right example, even the issue might have been resolved by now. Yet, more people could have tried in more geographies with a better hands on infra/pipeline and ci 
 
 
 	Feedback so far
