@@ -9,77 +9,68 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./cachix.nix
+      ./linux-5.5.nix
     ];
-boot.loader.systemd-boot = {
-  enable = true;
-  editor = false;
-};
-boot.loader.efi = {
-  canTouchEfiVariables = true;
-};
-boot.loader.grub = {
-  enable = true;
-  copyKernels = true;
-  efiInstallAsRemovable = false;
-  efiSupport = true;
-  fsIdentifier = "uuid";
-  splashMode = "stretch";
-  version = 2;
-  device = "nodev";
-  extraEntries = ''
-    menuentry "Reboot" {
-      reboot
-    }
-    menuentry "Poweroff" {
-      halt
-    }
-  '';
-};
-boot.kernelParams = [ "console=ttyS0,115200 earlyprintk=serial,ttyS0,115200" ];
-  # Use the GRUB 2 boot loader.
-#  boot.loader.grub.enable = true;
- # boot.loader.grub.version = 2;
-  # boot.loader.grub.efiSupport = true;
-  # boot.loader.grub.efiInstallAsRemovable = true;
-  # boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  # Define on which hard drive you want to install Grub.
-  #boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
-#   #boot.loader.grub.extraEntries = ''
-#     menuentry "NixOS - Secure Launch" {
-# #    search --set=drive1 --fs-uuid fdd9e92a-3d69-4bde-8c39-167ff7fba974
-# #    search --set=drive2 --fs-uuid fdd9e92a-3d69-4bde-8c39-167ff7fba974
-#       slaunch skinit
-#       slaunch_module ($drive2)/boot/lz_header
-#       linux ($drive2)/nix/store/3w98shnz1a6nxpqn2wwn728mr12dy3kz-linux-5.5.3/bzImage systemConfig=/nix/store/3adz0xnfnr71hrg84nyawg2rqxrva3x3-nixos-system-nixos-20.09.git.c156a866dd7M init=/nix/store/3adz0xnfnr71hrg84nyawg2rqxrva3x3-nixos-system-nixos-20.09.git.c156a866dd7M/init console=ttyS0,115200 earlyprintk=serial,ttyS0,115200 loglevel=4
-#       initrd ($drive2)/nix/store/7q64073svk689cvk36z78zj7y2ifgjdv-initrd-linux-5.5.3/initrd
-#     }
-#   '';
 
-   networking.hostName = "nixos"; # Define your hostname.
-   networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  boot.kernelParams = [ "console=ttyS0,115200 earlyprintk=serial,ttyS0,115200" ];
+  boot.loader.systemd-boot = {
+    enable = true;
+    editor = false;
+  };
+  # Automatically add boot entry to UEFI boot order.
+  boot.loader.efi = {
+    canTouchEfiVariables = true;
+  };
+  boot.loader.grub = {
+    enable = true;
+    copyKernels = true;
+    efiInstallAsRemovable = false;
+    efiSupport = true;
+    fsIdentifier = "uuid";
+    splashMode = "stretch";
+    version = 2;
+    device = "nodev";
+    extraEntries = ''
+      menuentry "NixOS - Secure Launch" {
+        --set=drive1 --fs-uuid 4881-6D27
+        slaunch skinit
+        slaunch_module ($drive1)//lz_header
+        linux ($drive1)//kernels/3w98shnz1a6nxpqn2wwn728mr12dy3kz-linux-5.5.3-bzImage systemConfig=/nix/store/ci38is4cvjlz528jay66h7qpqr6ws22n-nixos-system-nixos-20.09.git.c156a866dd7M init=/nix/store/ci38is4cvjlz528jay66h7qpqr6ws22n-nixos-system-nixos-20.09.git.c156a866dd7M/init console=ttyS0,115200 earlyprintk=serial,ttyS0,115200 console=tty0 loglevel=4
+        initrd ($drive1)//kernels/k1x969q4mwj59hyq3hn2mcxck8s2410a-initrd-linux-5.5.3-initrd
+      }
+      menuentry "Reboot" {
+        reboot      
+      }
+      menuentry "Poweroff" {
+        halt
+      }
+    '';
+  };
+  boot.kernelParams = [ "console=ttyS0,115200 earlyprintk=serial,ttyS0,115200 console=tty0" ];
+  # networking.hostName = "nixos"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  networking.interfaces.enp1s0.useDHCP = true;
-  networking.interfaces.enp2s0.useDHCP = true;
-  networking.interfaces.enp3s0.useDHCP = true;
-  networking.interfaces.wlp4s0.useDHCP = true;
+  networking.interfaces.eno1.useDHCP = true;
+  networking.interfaces.eno2.useDHCP = true;
+  networking.interfaces.eno3.useDHCP = true;
+  networking.interfaces.eno4.useDHCP = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
-  # i18n = {
-  #   consoleFont = "Lat2-Terminus16";
-  #   consoleKeyMap = "us";
-  #   defaultLocale = "en_US.UTF-8";
+  # i18n.defaultLocale = "en_US.UTF-8";
+  # console = {
+  #   font = "Lat2-Terminus16";
+  #   keyMap = "us";
   # };
 
   # Set your time zone.
-  # time.timeZone = "Asia/Kolakata";
+  # time.timeZone = "Europe/Amsterdam";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -90,7 +81,11 @@ boot.kernelParams = [ "console=ttyS0,115200 earlyprintk=serial,ttyS0,115200" ];
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  # programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  #   pinentryFlavor = "gnome3";
+  # };
 
   # List services that you want to enable:
 
@@ -128,22 +123,15 @@ boot.kernelParams = [ "console=ttyS0,115200 earlyprintk=serial,ttyS0,115200" ];
   #   extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
   # };
 
-  # This value determines the NixOS release with which your system is to be
-  # compatible, in order to avoid breaking some software such as database
-  # servers. You should change this only after NixOS release notes say you
-  # should.
-  system.stateVersion = "19.09"; # Did you read the comment?
-  #kernel modules
-#  menuentry 'NixOS' {
-#    insmod crypto
-#    insmod cryptodisk
-#    insmod luks
-#    insmod lvm
-#    cryptomount -u a0cb535a8468485fa220a5f49e85c9f4
-#    set root='lvmid/5atKN9-PQBi-T9wb-Iyz8-qP4y-HN2E-c5uLOT/C9zkjF-IHu0-qQkP-KgLf-8rAy-TVPu-HQ7gtj'
-#    search --fs-uuid --set=root cc6a06bb-336f-4e9f-a5f0-fdd43e7f548f
-#    configfile '/boot/grub/grub.cfg'
-#}
+  # This value determines the NixOS release from which the default
+  # settings for stateful data, like file locations and database versions
+  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # this value at the release version of the first install of this system.
+  # Before changing this value read the documentation for this option
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  system.stateVersion = "20.03"; # Did you read the comment?
+
+
   # OS utilities
   environment.systemPackages = [
                                  pkgs.pkg-config
@@ -174,10 +162,9 @@ boot.kernelParams = [ "console=ttyS0,115200 earlyprintk=serial,ttyS0,115200" ];
                                  pkgs.tpm2-tss
                                  pkgs.landing-zone
                                  pkgs.landing-zone-debug
-                                 pkgs.grub-tb
+                                 pkgs.grub-tb-efi
                                 ];
 
   # Grub override
-  nixpkgs.config.packageOverrides = pkgs: { grub2 = pkgs.grub-tb; };
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  nixpkgs.config.packageOverrides = pkgs: { grub2 = pkgs.grub-tb-efi; };
 }
