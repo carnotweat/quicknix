@@ -1,8 +1,8 @@
--  Just follow the very staight forward [tutotial](https://binarin.ru/post/truly-reproducible-nixos/) , if you can manage that without messing your nix-profile and in worst case entire system.
+-  Just follow the very staight forward [tutotrial](https://binarin.ru/post/truly-reproducible-nixos/) , if you can manage that, without messing your nix-profile and in worst case entire system.
 
 
 
-- Excerpts of Direction and goal 
+- Excerpts of Direction and Goals 
 
 
 
